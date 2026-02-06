@@ -2,272 +2,228 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Decayed SMP – Admin Dashboard</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <title>Decayed SMP Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
 
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-
         body {
-          font-family: 'Orbitron', sans-serif;
+          font-family: Orbitron, sans-serif;
           background: radial-gradient(circle at top, #1a0000, #000);
           color: #eee;
+          padding: 3rem;
         }
 
-        header {
-          padding: 2.5rem;
-          text-align: center;
-          border-bottom: 1px solid #400;
-        }
-
-        header h1 {
+        h1 {
           color: #b00000;
-          letter-spacing: 2px;
+          text-align: center;
+          margin-bottom: 3rem;
         }
 
-        header p {
-          opacity: 0.7;
-          margin-top: 0.6rem;
-          font-size: 0.85rem;
+        nav {
+          display: flex;
+          gap: 1rem;
+          justify-content: center;
+          margin-bottom: 3rem;
         }
 
-        main {
-          padding: 4rem 8%;
+        nav button {
+          background: none;
+          border: 2px solid #900;
+          color: #fff;
+          padding: 0.6rem 1.5rem;
+          cursor: pointer;
         }
 
-        section {
-          margin-bottom: 4rem;
+        nav button.active {
+          background: #900;
         }
 
-        h2 {
-          color: #a00000;
-          margin-bottom: 1.8rem;
-          letter-spacing: 1px;
+        .section {
+          display: none;
         }
 
-        /* GRID */
-        .grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-          gap: 2rem;
+        .section.active {
+          display: block;
         }
 
-        /* CARD */
         .card {
-          background: linear-gradient(145deg, #120000, #000);
+          background: #0b0000;
           border: 1px solid #500;
           padding: 2rem;
-          transition: 0.3s ease;
-        }
-
-        .card.accepted {
-          border-color: #0a0;
-          box-shadow: 0 0 25px #0a0;
-        }
-
-        .card.denied {
-          border-color: #900;
-          box-shadow: 0 0 25px #900;
-          opacity: 0.65;
+          margin-bottom: 2rem;
+          box-shadow: 0 0 20px #300;
         }
 
         .card h3 {
           color: #c00000;
-          margin-bottom: 0.6rem;
+          margin-bottom: 0.5rem;
         }
 
         .meta {
-          font-size: 0.85rem;
           opacity: 0.8;
-          line-height: 1.6;
-          margin-bottom: 1.2rem;
-        }
-
-        .status {
-          font-size: 0.8rem;
-          margin-bottom: 0.8rem;
-        }
-
-        /* ACTIONS */
-        .actions {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 0.6rem;
+          font-size: 0.9rem;
+          margin-bottom: 1rem;
         }
 
         .actions button {
-          flex: 1;
-          padding: 0.6rem;
-          background: transparent;
+          margin-right: 0.5rem;
+          margin-top: 0.5rem;
           border: 1px solid #700;
+          background: none;
           color: #fff;
+          padding: 0.4rem 1rem;
           cursor: pointer;
-          font-family: inherit;
-          font-size: 0.8rem;
-          transition: 0.25s ease;
         }
 
         .actions button:hover {
           background: #900;
-          box-shadow: 0 0 15px #900;
         }
 
-        /* DETAILS */
         .details {
           display: none;
-          margin-top: 1.2rem;
+          margin-top: 1rem;
           border-top: 1px solid #400;
           padding-top: 1rem;
-          font-size: 0.85rem;
-          line-height: 1.7;
-          opacity: 0.85;
+          opacity: 0.9;
         }
 
-        /* USERS */
-        .user-row {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 1rem;
-          border: 1px solid #400;
-          margin-bottom: 0.8rem;
+        input {
           background: #0d0000;
-        }
-
-        .user-row button {
-          padding: 0.4rem 1rem;
           border: 1px solid #700;
-          background: none;
           color: #fff;
-          cursor: pointer;
-        }
-
-        /* INPUT */
-        .add-user {
-          display: flex;
-          gap: 1rem;
-          margin-bottom: 1.5rem;
-        }
-
-        .add-user input {
-          flex: 1;
-          padding: 0.7rem;
-          background: #0d0000;
-          border: 1px solid #600;
-          color: #fff;
-          font-family: inherit;
+          padding: 0.6rem;
+          width: 300px;
+          margin-right: 1rem;
         }
     </style>
 </head>
-
 <body>
 
-<header>
-    <h1>DECAYED SMP ADMIN</h1>
-    <p>Authorized Owner: e85972080@gmail.com</p>
-</header>
+<h1>DECAYED SMP ADMIN</h1>
 
-<main>
+<nav>
+    <button class="active" onclick="switchTab('apps')">Applications</button>
+    <button onclick="switchTab('admins')">Admins</button>
+</nav>
 
-    <!-- APPLICATIONS -->
-    <section>
-        <h2>Applications</h2>
+<!-- APPLICATIONS -->
+<div id="apps" class="section active"></div>
 
-        <div class="grid" id="apps">
+<!-- ADMINS -->
+<div id="admins" class="section">
+    <input id="adminEmail" placeholder="email@example.com">
+    <button onclick="addAdmin()">Add Admin</button>
+    <div id="adminList" style="margin-top:2rem;"></div>
+</div>
 
-            <div class="card">
-                <h3>Side Actor Application</h3>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+    import {
+      getFirestore, collection, getDocs, doc,
+      updateDoc, deleteDoc, setDoc, serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+    import {
+      getAuth, onAuthStateChanged, signOut
+    } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
 
-                <div class="status">Status: Pending</div>
+    const firebaseConfig = {
+      apiKey: "AIzaSyA2hzkK8CMcMCTPDGzcF5cqp8ulZRAlBZk",
+      authDomain: "decayedsmp.firebaseapp.com",
+      projectId: "decayedsmp"
+    };
 
-                <div class="meta">
-                    <strong>Name:</strong> zxcv<br>
-                    <strong>Age:</strong> 3456<br>
-                    <strong>IGN:</strong> srfg<br>
-                    <strong>Discord:</strong> sdfg<br>
-                    <strong>Role:</strong> Side Actor
-                </div>
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
 
-                <div class="actions">
-                    <button onclick="acceptApp(this)">Accept</button>
-                    <button onclick="denyApp(this)">Deny</button>
-                    <button onclick="toggleDetails(this)">See More</button>
-                    <button onclick="deleteApp(this)">Delete</button>
-                </div>
+    const ADMIN_EMAIL = "e85972080@gmail.com";
 
-                <!-- SEE MORE -->
-                <div class="details">
-                    <p><strong>Role you’d play:</strong><br>sdfg</p>
-                    <p><strong>RP Experience:</strong><br>sdfg</p>
-                    <p><strong>Why Side Actor?</strong><br>sdfg</p>
-                </div>
+    onAuthStateChanged(auth, user => {
+      if (!user || user.email !== ADMIN_EMAIL) {
+        signOut(auth);
+        location.href = "adminregister.html";
+      } else {
+        loadApps();
+        loadAdmins();
+      }
+    });
+
+    window.switchTab = id => {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      event.target.classList.add('active');
+    };
+
+    async function loadApps() {
+      const wrap = document.getElementById("apps");
+      wrap.innerHTML = "";
+
+      const snap = await getDocs(collection(db, "applications"));
+      snap.forEach(d => {
+        const a = d.data();
+
+        wrap.innerHTML += `
+          <div class="card">
+            <h3>${a.type.toUpperCase()} APPLICATION</h3>
+            <div class="meta">
+              <strong>Name:</strong> ${a.name}<br>
+              <strong>Age:</strong> ${a.age}<br>
+              <strong>IGN:</strong> ${a.ign}<br>
+              <strong>Discord:</strong> ${a.discord}
             </div>
 
-
-        </div>
-    </section>
-
-    <!-- USERS -->
-    <section>
-        <h2>Admin Users</h2>
-
-        <div class="add-user">
-            <input type="email" id="userEmail" placeholder="Add admin by email">
-            <button onclick="addUser()">Add</button>
-        </div>
-
-        <div id="users">
-            <div class="user-row">
-                <span>e85972080@gmail.com (Owner)</span>
+            <div class="actions">
+              <button onclick="setStatus('${d.id}','accepted')">Accept</button>
+              <button onclick="setStatus('${d.id}','denied')">Deny</button>
+              <button onclick="toggleDetails(this)">See More</button>
+              <button onclick="deleteApp('${d.id}')">Delete</button>
             </div>
-        </div>
-    </section>
 
-</main>
-
-<script>
-    function toggleDetails(btn) {
-      const details = btn.parentElement.nextElementSibling;
-      details.style.display = details.style.display === "block" ? "none" : "block";
+            <div class="details">
+              <p><strong>Role you’d play:</strong><br>${a.role}</p>
+              <p><strong>RP Experience:</strong><br>${a.rpExperience}</p>
+              <p><strong>Why:</strong><br>${a.reason}</p>
+            </div>
+          </div>
+        `;
+      });
     }
 
-    function deleteApp(btn) {
-      if (!confirm("Delete this application?")) return;
-      btn.closest(".card").remove();
+    window.toggleDetails = btn => {
+      btn.parentElement.nextElementSibling.style.display =
+        btn.parentElement.nextElementSibling.style.display === "block" ? "none" : "block";
+    };
+
+    window.setStatus = async (id, status) => {
+      await updateDoc(doc(db, "applications", id), { status });
+      loadApps();
+    };
+
+    window.deleteApp = async id => {
+      if (confirm("Delete application?")) {
+        await deleteDoc(doc(db, "applications", id));
+        loadApps();
+      }
+    };
+
+    async function loadAdmins() {
+      const wrap = document.getElementById("adminList");
+      wrap.innerHTML = "";
+      const snap = await getDocs(collection(db, "admins"));
+      snap.forEach(d => wrap.innerHTML += `<div>${d.id}</div>`);
     }
 
-    function acceptApp(btn) {
-      const card = btn.closest(".card");
-      card.classList.remove("denied");
-      card.classList.add("accepted");
-      card.querySelector(".status").textContent = "Status: Accepted";
-    }
-
-    function denyApp(btn) {
-      const card = btn.closest(".card");
-      card.classList.remove("accepted");
-      card.classList.add("denied");
-      card.querySelector(".status").textContent = "Status: Denied";
-    }
-
-    function addUser() {
-      const email = document.getElementById("userEmail").value.trim();
+    window.addAdmin = async () => {
+      const email = document.getElementById("adminEmail").value.trim();
       if (!email) return;
-
-      const users = document.getElementById("users");
-
-      const row = document.createElement("div");
-      row.className = "user-row";
-      row.innerHTML = `
-        <span>${email}</span>
-        <button onclick="this.parentElement.remove()">Remove</button>
-      `;
-
-      users.appendChild(row);
-      document.getElementById("userEmail").value = "";
-    }
+      await setDoc(doc(db, "admins", email), {
+        email,
+        addedAt: serverTimestamp()
+      });
+      document.getElementById("adminEmail").value = "";
+      loadAdmins();
+    };
 </script>
 
 </body>
