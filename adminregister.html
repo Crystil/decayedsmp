@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Admin Auth – Decayed SMP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+          margin: 0;
+          min-height: 100vh;
+          background: radial-gradient(circle at top, #2a0000, #050000);
+          font-family: Arial, Helvetica, sans-serif;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #fff;
+        }
+
+        .card {
+          width: 420px;
+          background: rgba(0,0,0,0.65);
+          border: 1px solid #700;
+          border-radius: 14px;
+          padding: 2.2rem;
+          box-shadow: 0 0 30px #400;
+        }
+
+        .logo {
+          display: block;
+          margin: 0 auto 1rem;
+          width: 90px;
+        }
+
+        h1 {
+          text-align: center;
+          margin-bottom: 1.2rem;
+          letter-spacing: 3px;
+          font-size: 1.4rem;
+        }
+
+        .tabs {
+          display: flex;
+          gap: 0.5rem;
+          margin-bottom: 1.5rem;
+        }
+
+        .tab {
+          flex: 1;
+          padding: 0.6rem;
+          text-align: center;
+          cursor: pointer;
+          border: 1px solid #700;
+          border-radius: 6px;
+          opacity: 0.6;
+        }
+
+        .tab.active {
+          opacity: 1;
+          background: linear-gradient(135deg, #700, #b00000);
+          font-weight: bold;
+        }
+
+        input {
+          width: 100%;
+          padding: 0.85rem;
+          margin-bottom: 1rem;
+          background: #0d0000;
+          border: 1px solid #700;
+          color: #fff;
+          border-radius: 6px;
+          font-size: 0.95rem;
+        }
+
+        input::placeholder { color: #777; }
+
+        input:focus {
+          outline: none;
+          border-color: #b00000;
+          box-shadow: 0 0 12px #600;
+          background: #120000;
+        }
+
+        button {
+          width: 100%;
+          padding: 0.85rem;
+          background: linear-gradient(135deg, #700, #b00000);
+          border: none;
+          color: #fff;
+          font-weight: bold;
+          border-radius: 6px;
+          cursor: pointer;
+          letter-spacing: 1px;
+          margin-top: 0.5rem;
+        }
+
+        button:hover { filter: brightness(1.15); }
+
+        .footer {
+          text-align: center;
+          margin-top: 1.2rem;
+          font-size: 0.8rem;
+          opacity: 0.75;
+        }
+
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <img src="assets/logo.png" alt="Decayed SMP" class="logo" />
+    <h1>ADMIN ACCESS</h1>
+
+    <div class="tabs">
+        <div id="loginTab" class="tab active">Login</div>
+        <div id="registerTab" class="tab">Register</div>
+    </div>
+
+    <!-- Login -->
+    <div id="loginForm">
+        <input id="loginEmail" type="email" placeholder="Email" />
+        <input id="loginPassword" type="password" placeholder="Password" />
+        <button id="loginBtn">Login</button>
+    </div>
+
+    <!-- Register -->
+    <div id="registerForm" class="hidden">
+        <input id="adminName" type="text" placeholder="Admin Name" />
+        <input id="registerEmail" type="email" placeholder="Email" />
+        <input id="registerPassword" type="password" placeholder="Password" />
+        <button id="registerBtn">Create Admin</button>
+    </div>
+
+    <div class="footer">Restricted Access • Decayed SMP</div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyA2hzkK8CMcMCTPDGzcF5cqp8ulZRAlBZk",
+      authDomain: "decayedsmp.firebaseapp.com",
+      projectId: "decayedsmp",
+      storageBucket: "decayedsmp.firebasestorage.app",
+      messagingSenderId: "12176878951",
+      appId: "1:12176878951:web:54ab1f6079defcee1513c2"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const loginTab = document.getElementById("loginTab");
+    const registerTab = document.getElementById("registerTab");
+    const loginForm = document.getElementById("loginForm");
+    const registerForm = document.getElementById("registerForm");
+
+    loginTab.onclick = () => {
+      loginTab.classList.add("active");
+      registerTab.classList.remove("active");
+      loginForm.classList.remove("hidden");
+      registerForm.classList.add("hidden");
+    };
+
+    registerTab.onclick = () => {
+      registerTab.classList.add("active");
+      loginTab.classList.remove("active");
+      registerForm.classList.remove("hidden");
+      loginForm.classList.add("hidden");
+    };
+
+    document.getElementById("loginBtn").onclick = async () => {
+      try {
+        await signInWithEmailAndPassword(
+          auth,
+          loginEmail.value,
+          loginPassword.value
+        );
+        window.location.href = "admindashboard.html";
+      } catch (e) {
+        alert(e.message);
+      }
+    };
+
+    document.getElementById("registerBtn").onclick = async () => {
+      try {
+        const cred = await createUserWithEmailAndPassword(
+          auth,
+          registerEmail.value,
+          registerPassword.value
+        );
+
+        await setDoc(doc(db, "admins", cred.user.uid), {
+          name: adminName.value,
+          email: registerEmail.value,
+          role: "admin",
+          createdAt: new Date()
+        });
+
+        alert("Admin created. You can now log in.");
+        loginTab.click();
+      } catch (e) {
+        alert(e.message);
+      }
+    };
+</script>
+
+</body>
+</html>

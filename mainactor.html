@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Actor Application</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{
+          font-family:'Orbitron',sans-serif;
+          background:radial-gradient(circle at top,#1a0000,#000);
+          color:#eee;
+          min-height:100vh
+        }
+        header{text-align:center;padding:4rem 1rem 2rem}
+        header img{height:80px;filter:drop-shadow(0 0 12px #800)}
+        h1{color:#b00000;margin-top:1rem}
+        .form{max-width:700px;margin:3rem auto;background:#0b0000;border:1px solid #400;padding:3rem}
+        label{display:block;margin-top:1.4rem;color:#c00000}
+        input,textarea{
+          width:100%;padding:.9rem;
+          background:#0d0000;border:1px solid #700;color:#fff
+        }
+        button{
+          margin-top:2.5rem;width:100%;
+          padding:1rem;border:2px solid #900;
+          background:none;color:#fff;cursor:pointer
+        }
+        button:hover{background:#900}
+    </style>
+</head>
+
+<body>
+<header>
+    <img src="assets/logo.png">
+    <h1>Main Actor Application</h1>
+    <p>Everyone is a main character.</p>
+</header>
+
+<div class="form">
+    <form id="mainActorForm">
+        <label>Name</label><input required>
+        <label>Age</label><input type="number" required>
+        <label>Gender</label><input>
+        <label>Minecraft IGN</label><input required>
+        <label>Discord</label><input required>
+        <label>Character</label><input>
+        <label>Personality</label><textarea rows="3"></textarea>
+        <label>Why should we pick you?</label><textarea rows="4"></textarea>
+        <button type="submit">Submit</button>
+    </form>
+</div>
+
+<script type="module">
+    import{initializeApp}from"https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+    import{getFirestore,collection,addDoc,serverTimestamp}from"https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+
+    const app=initializeApp({
+     apiKey:"AIzaSyA2hzkK8CMcMCTPDGzcF5cqp8ulZRAlBZk",
+     authDomain:"decayedsmp.firebaseapp.com",
+     projectId:"decayedsmp"
+    });
+    const db=getFirestore(app);
+
+    document.getElementById("mainActorForm").onsubmit=async e=>{
+     e.preventDefault();
+     const f=e.target.querySelectorAll("input,textarea");
+     await addDoc(collection(db,"applications"),{
+      type:"main_actor",
+      name:f[0].value,
+      age:Number(f[1].value),
+      gender:f[2].value,
+      ign:f[3].value,
+      discord:f[4].value,
+      character:f[5].value,
+      personality:f[6].value,
+      reason:f[7].value,
+      status:"pending",
+      createdAt:serverTimestamp()
+     });
+     window.location.href="admin-dashboard.html";
+    };
+</script>
+</body>
+</html>

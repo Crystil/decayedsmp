@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DECAYED SMP</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Orbitron', sans-serif;
+      background: radial-gradient(circle at top, #1a0000, #000);
+      color: #eee;
+      overflow-x: hidden;
+    }
+
+    /* ===== HERO ===== */
+    header {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    header img {
+      height: 95px;
+      filter: drop-shadow(0 0 16px #900);
+      animation: glow 3s ease-in-out infinite;
+    }
+
+    @keyframes glow {
+      0% { filter: drop-shadow(0 0 6px #500); }
+      50% { filter: drop-shadow(0 0 18px #900); }
+      100% { filter: drop-shadow(0 0 6px #500); }
+    }
+
+    header p {
+      margin-top: 1.4rem;
+      font-size: 1.15rem;
+      opacity: 0.8;
+    }
+
+    .cta {
+      margin-top: 3rem;
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+    }
+
+    .cta a {
+      padding: 1rem 2.5rem;
+      border: 2px solid #900;
+      color: #fff;
+      text-decoration: none;
+      transition: 0.3s ease;
+    }
+
+    .cta a:hover {
+      background: #900;
+      box-shadow: 0 0 25px #900;
+      transform: translateY(-3px);
+    }
+
+    /* ===== SECTIONS ===== */
+    section {
+      padding: 6rem 10%;
+    }
+
+    section h2 {
+      font-size: 3.4rem;
+      margin-bottom: 2rem;
+      color: #a00000;
+      text-align: center;
+      letter-spacing: 2px;
+    }
+
+    /* ===== LORE ===== */
+    .lore p {
+      max-width: 900px;
+      margin: 0 auto;
+      line-height: 1.8;
+      opacity: 0.85;
+      text-align: center;
+    }
+
+    /* ===== CAST ===== */
+    .cast {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 2.8rem;
+      margin-top: 4rem;
+    }
+
+    .cast-card {
+      background: linear-gradient(145deg, #120000, #000);
+      border: 1px solid #400;
+      padding: 2.5rem 2rem;
+      text-align: center;
+      transition: 0.4s ease;
+    }
+
+    .cast-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 0 40px #600;
+    }
+
+    .cast-card img {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: contain;
+      image-rendering: pixelated;
+      margin-bottom: 1.2rem;
+      filter: drop-shadow(0 0 12px #600);
+    }
+
+    .cast-card h3 {
+      color: #c00000;
+      margin-bottom: 0.4rem;
+      font-size: 1.3rem;
+    }
+
+    .cast-card p {
+      opacity: 0.7;
+      font-size: 0.95rem;
+    }
+
+    /* ===== APPLICATIONS ===== */
+    .applications {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 2.5rem;
+      margin-top: 4rem;
+    }
+
+    .app-card {
+      background: #0a0000;
+      border: 1px solid #500;
+      padding: 2.8rem;
+      text-align: center;
+      transition: 0.3s ease;
+    }
+
+    .app-card:hover {
+      box-shadow: 0 0 35px #600;
+      transform: translateY(-6px);
+    }
+
+    .app-card h3 {
+      color: #b00000;
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+    }
+
+    .app-card p {
+      opacity: 0.75;
+      font-size: 0.95rem;
+    }
+
+    .app-card a {
+      display: inline-block;
+      margin-top: 1.6rem;
+      color: #fff;
+      border: 2px solid #700;
+      padding: 0.9rem 2.2rem;
+      text-decoration: none;
+      transition: 0.3s ease;
+    }
+
+    .app-card a:hover {
+      background: #900;
+      box-shadow: 0 0 20px #900;
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      text-align: center;
+      padding: 3rem;
+      background: #050000;
+      border-top: 1px solid #300;
+      opacity: 0.7;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div>
+    <img src="assets/logo.png" alt="Decayed SMP Logo">
+    <p>A world already past saving.</p>
+
+    <div class="cta">
+      <a href="#applications">Apply</a>
+      <a href="#cast">The Cast</a>
+    </div>
+  </div>
+</header>
+
+<section class="lore">
+  <h2>The Decayed Universe</h2>
+  <p>
+    Once thriving, the universe collapsed under ambition and corruption.
+    What remains is a fractured world ruled by power, alliances,
+    and scripted fate. Every role matters.
+  </p>
+</section>
+
+<section id="cast">
+  <h2>THE DECAYED SMP CAST</h2>
+
+  <div class="cast">
+    <div class="cast-card">
+      <img src="assets/nullify.png" alt="Nullify">
+      <h3>Nullify</h3>
+      <p>Main Character</p>
+    </div>
+
+    <div class="cast-card">
+      <img src="assets/agent.png" alt="Agent">
+      <h3>Agent</h3>
+      <p>Main Character</p>
+    </div>
+
+    <div class="cast-card">
+      <img src="assets/squar.png" alt="Squar">
+      <h3>Squar</h3>
+      <p>Main Character</p>
+    </div>
+
+    <div class="cast-card">
+      <img src="assets/quixle.png" alt="Quixle">
+      <h3>Quixle</h3>
+      <p>Main Character</p>
+    </div>
+  </div>
+
+  <div class="cast" style="max-width:320px;margin:4rem auto 0;">
+    <div class="cast-card" style="opacity:0.65;">
+      <img src="assets/hp4.png" alt="hp4 aka cool guy">
+      <h3>hp4 <span style="font-size:0.75em;opacity:0.7;">aka "cool guy"</span></h3>
+      <p>Just some guy.</p>
+    </div>
+  </div>
+</section>
+
+<section id="applications">
+  <h2>Applications</h2>
+
+  <div class="applications">
+    <div class="app-card">
+      <h3>Side Actor</h3>
+      <p>Support the main storyline with meaningful character arcs.</p>
+      <a href="sideapp.html">Apply</a>
+    </div>
+
+    <div class="app-card">
+      <h3>Builder</h3>
+      <p>Create decayed ruins, cities, and cinematic environments.</p>
+      <a href="buildapp.html">Apply</a>
+    </div>
+
+    <div class="app-card">
+      <h3>Staff</h3>
+      <p>Moderation, lore enforcement, and server integrity.</p>
+      <a href="staffapp.html">Apply</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  DECAYED SMP © Scripted Minecraft SMP
+</footer>
+
+</body>
+</html>

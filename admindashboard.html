@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Decayed SMP — Admin Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+          font-family: 'Orbitron', sans-serif;
+          background: radial-gradient(circle at top, #1a0000, #000);
+          color: #eee;
+          min-height: 100vh;
+        }
+
+        header {
+          padding: 2.5rem;
+          text-align: center;
+          border-bottom: 1px solid #300;
+        }
+
+        header h1 {
+          color: #b00000;
+          letter-spacing: 2px;
+        }
+
+        nav {
+          display: flex;
+          justify-content: center;
+          gap: 2rem;
+          margin-top: 1.5rem;
+        }
+
+        nav button {
+          background: none;
+          border: 2px solid #700;
+          color: #fff;
+          padding: 0.7rem 1.6rem;
+          cursor: pointer;
+          transition: 0.3s ease;
+        }
+
+        nav button:hover,
+        nav button.active {
+          background: #900;
+          box-shadow: 0 0 20px #900;
+        }
+
+        main {
+          padding: 4rem 8%;
+        }
+
+        h2 {
+          color: #a00000;
+          margin-bottom: 2rem;
+        }
+
+        table {
+          width: 100%;
+          border-collapse: collapse;
+        }
+
+        th, td {
+          padding: 1rem;
+          border-bottom: 1px solid #300;
+          text-align: left;
+        }
+
+        th {
+          color: #c00000;
+          font-size: 0.9rem;
+          text-transform: uppercase;
+        }
+
+        td button {
+          background: none;
+          border: 1px solid #700;
+          color: #fff;
+          padding: 0.4rem 0.9rem;
+          margin-right: 0.4rem;
+          cursor: pointer;
+        }
+
+        td button:hover {
+          background: #900;
+        }
+
+        /* MODAL */
+        .modal {
+          position: fixed;
+          inset: 0;
+          background: rgba(0,0,0,0.85);
+          display: none;
+          justify-content: center;
+          align-items: center;
+          z-index: 999;
+        }
+
+        .modal-box {
+          background: linear-gradient(145deg, #120000, #000);
+          border: 1px solid #600;
+          max-width: 720px;
+          width: 90%;
+          max-height: 80vh;
+          overflow-y: auto;
+          padding: 2.5rem;
+          box-shadow: 0 0 40px #600;
+        }
+
+        .modal-box h3 {
+          color: #b00000;
+          margin-bottom: 2rem;
+          text-align: center;
+        }
+
+        .field {
+          margin-bottom: 1.6rem;
+        }
+
+        .field h4 {
+          color: #c00000;
+          font-size: 0.85rem;
+          margin-bottom: 0.4rem;
+          letter-spacing: 1px;
+          text-transform: uppercase;
+        }
+
+        .field p {
+          background: #0b0000;
+          padding: 0.8rem;
+          border-left: 3px solid #700;
+          line-height: 1.6;
+        }
+
+        .modal-box button {
+          width: 100%;
+          margin-top: 2rem;
+          padding: 0.9rem;
+          background: none;
+          border: 2px solid #900;
+          color: #fff;
+          cursor: pointer;
+        }
+
+        .modal-box button:hover {
+          background: #900;
+        }
+
+        .hidden { display: none; }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>DECAYED SMP — ADMIN</h1>
+    <nav>
+        <button class="active" onclick="showTab('apps')">Applications</button>
+        <button onclick="showTab('users')">Admins</button>
+    </nav>
+</header>
+
+<main>
+
+    <!-- APPLICATIONS -->
+    <section id="apps">
+        <h2>Applications</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody id="appsTable"></tbody>
+        </table>
+    </section>
+
+    <!-- USERS -->
+    <section id="users" class="hidden">
+        <h2>Admin Users</h2>
+        <input id="adminEmail" placeholder="email@example.com" style="padding:0.7rem;width:300px;background:#0b0000;border:1px solid #700;color:#fff;">
+        <button onclick="addAdmin()" style="margin-left:1rem;">Add Admin</button>
+        <ul id="adminList" style="margin-top:2rem;"></ul>
+    </section>
+
+</main>
+
+<!-- VIEW MODAL -->
+<div class="modal" id="viewModal">
+    <div class="modal-box">
+        <h3 id="modalTitle"></h3>
+        <div id="modalContent"></div>
+        <button onclick="closeModal()">Close</button>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+    import { getFirestore, collection, getDocs, doc, setDoc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyA2hzkK8CMcMCTPDGzcF5cqp8ulZRAlBZk",
+      authDomain: "decayedsmp.firebaseapp.com",
+      projectId: "decayedsmp"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const appsTable = document.getElementById("appsTable");
+    let cache = {};
+
+    onAuthStateChanged(auth, async user => {
+      if (!user) location.href = "adminregister.html";
+
+      const adminDoc = await getDocs(collection(db, "admins"));
+      const allowed = adminDoc.docs.some(d => d.id === user.email);
+      if (!allowed) {
+        alert("Not authorized.");
+        auth.signOut();
+      }
+
+      loadApps();
+    });
+
+    async function loadApps() {
+      appsTable.innerHTML = "";
+      const snap = await getDocs(collection(db, "applications"));
+      snap.forEach(d => {
+        const app = d.data();
+        cache[d.id] = app;
+        appsTable.innerHTML += `
+          <tr>
+            <td>${app.name || "-"}</td>
+            <td>${app.type}</td>
+            <td>${app.status || "pending"}</td>
+            <td>
+              <button onclick="viewApp('${d.id}')">See</button>
+              <button onclick="setStatus('${d.id}','accepted')">Accept</button>
+              <button onclick="setStatus('${d.id}','denied')">Deny</button>
+              <button onclick="removeApp('${d.id}')">Delete</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    window.viewApp = id => {
+      const app = cache[id];
+      modalTitle.textContent = app.type.toUpperCase() + " APPLICATION";
+      modalContent.innerHTML = "";
+
+      Object.entries(app).forEach(([k,v])=>{
+        if (["type","status"].includes(k)) return;
+        modalContent.innerHTML += `
+          <div class="field">
+            <h4>${k}</h4>
+            <p>${v}</p>
+          </div>`;
+      });
+
+      viewModal.style.display = "flex";
+    };
+
+    window.closeModal = () => viewModal.style.display = "none";
+
+    window.setStatus = async (id, status) => {
+      await updateDoc(doc(db,"applications",id), { status });
+      loadApps();
+    };
+
+    window.removeApp = async id => {
+      if (confirm("Delete application?")) {
+        await deleteDoc(doc(db,"applications",id));
+        loadApps();
+      }
+    };
+
+    window.showTab = tab => {
+      document.getElementById("apps").classList.toggle("hidden", tab !== "apps");
+      document.getElementById("users").classList.toggle("hidden", tab !== "users");
+    };
+
+    window.addAdmin = async () => {
+      const email = document.getElementById("adminEmail").value;
+      if (!email) return;
+      await setDoc(doc(db,"admins",email), { added: Date.now() });
+      alert("Admin added");
+    };
+</script>
+
+</body>
+</html>

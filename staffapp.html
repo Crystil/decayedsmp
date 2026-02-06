@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+</html><!DOCTYPE html>
+<html>
+<head>
+  <title>Staff Application</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
+  <style>
+    body{font-family:Orbitron;background:#0b0000;color:#eee}
+    .form{max-width:700px;margin:4rem auto;border:1px solid #400;padding:3rem}
+    label{display:block;margin-top:1.4rem;color:#c00000}
+    input,textarea{width:100%;background:#0d0000;border:1px solid #700;color:#fff;padding:.8rem}
+    button{margin-top:2rem;width:100%;padding:1rem;border:2px solid #900;background:none;color:#fff}
+  </style>
+</head>
+<body>
+
+<div class="form">
+  <h2>Staff Application</h2>
+  <form id="staffForm">
+    <label>Name</label><input required>
+    <label>Age</label><input type="number" required>
+    <label>IGN</label><input required>
+    <label>Discord</label><input required>
+    <label>Staff role</label><input>
+    <label>Experience</label><textarea></textarea>
+    <label>Conflict handling</label><textarea></textarea>
+    <button>Submit</button>
+  </form>
+</div>
+
+<script type="module">
+  import{initializeApp}from"https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+  import{getFirestore,collection,addDoc,serverTimestamp}from"https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+
+  const app=initializeApp({apiKey:"AIzaSyA2hzkK8CMcMCTPDGzcF5cqp8ulZRAlBZk",projectId:"decayedsmp"});
+  const db=getFirestore(app);
+
+  staffForm.onsubmit=async e=>{
+   e.preventDefault();
+   const f=e.target.querySelectorAll("input,textarea");
+   await addDoc(collection(db,"applications"),{
+    type:"staff",
+    name:f[0].value,
+    age:f[1].value,
+    ign:f[2].value,
+    discord:f[3].value,
+    role:f[4].value,
+    experience:f[5].value,
+    conflict:f[6].value,
+    status:"pending",
+    createdAt:serverTimestamp()
+   });
+   window.location.href="admin-dashboard.html";
+  };
+</script>
+</body>
+</html>
