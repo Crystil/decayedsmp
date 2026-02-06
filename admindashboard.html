@@ -1,26 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <title>Decayed SMP — Admin Dashboard</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <title>Decayed SMP – Admin Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
 
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
           font-family: 'Orbitron', sans-serif;
           background: radial-gradient(circle at top, #1a0000, #000);
           color: #eee;
-          min-height: 100vh;
         }
 
         header {
           padding: 2.5rem;
           text-align: center;
-          border-bottom: 1px solid #300;
+          border-bottom: 1px solid #400;
         }
 
         header h1 {
@@ -28,274 +27,247 @@
           letter-spacing: 2px;
         }
 
-        nav {
-          display: flex;
-          justify-content: center;
-          gap: 2rem;
-          margin-top: 1.5rem;
-        }
-
-        nav button {
-          background: none;
-          border: 2px solid #700;
-          color: #fff;
-          padding: 0.7rem 1.6rem;
-          cursor: pointer;
-          transition: 0.3s ease;
-        }
-
-        nav button:hover,
-        nav button.active {
-          background: #900;
-          box-shadow: 0 0 20px #900;
+        header p {
+          opacity: 0.7;
+          margin-top: 0.6rem;
+          font-size: 0.85rem;
         }
 
         main {
           padding: 4rem 8%;
         }
 
+        section {
+          margin-bottom: 4rem;
+        }
+
         h2 {
           color: #a00000;
-          margin-bottom: 2rem;
+          margin-bottom: 1.8rem;
+          letter-spacing: 1px;
         }
 
-        table {
-          width: 100%;
-          border-collapse: collapse;
+        /* GRID */
+        .grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+          gap: 2rem;
         }
 
-        th, td {
-          padding: 1rem;
-          border-bottom: 1px solid #300;
-          text-align: left;
+        /* CARD */
+        .card {
+          background: linear-gradient(145deg, #120000, #000);
+          border: 1px solid #500;
+          padding: 2rem;
+          transition: 0.3s ease;
         }
 
-        th {
+        .card.accepted {
+          border-color: #0a0;
+          box-shadow: 0 0 25px #0a0;
+        }
+
+        .card.denied {
+          border-color: #900;
+          box-shadow: 0 0 25px #900;
+          opacity: 0.65;
+        }
+
+        .card h3 {
           color: #c00000;
-          font-size: 0.9rem;
-          text-transform: uppercase;
+          margin-bottom: 0.6rem;
         }
 
-        td button {
-          background: none;
+        .meta {
+          font-size: 0.85rem;
+          opacity: 0.8;
+          line-height: 1.6;
+          margin-bottom: 1.2rem;
+        }
+
+        .status {
+          font-size: 0.8rem;
+          margin-bottom: 0.8rem;
+        }
+
+        /* ACTIONS */
+        .actions {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.6rem;
+        }
+
+        .actions button {
+          flex: 1;
+          padding: 0.6rem;
+          background: transparent;
           border: 1px solid #700;
           color: #fff;
-          padding: 0.4rem 0.9rem;
-          margin-right: 0.4rem;
           cursor: pointer;
+          font-family: inherit;
+          font-size: 0.8rem;
+          transition: 0.25s ease;
         }
 
-        td button:hover {
+        .actions button:hover {
           background: #900;
+          box-shadow: 0 0 15px #900;
         }
 
-        /* MODAL */
-        .modal {
-          position: fixed;
-          inset: 0;
-          background: rgba(0,0,0,0.85);
+        /* DETAILS */
+        .details {
           display: none;
-          justify-content: center;
-          align-items: center;
-          z-index: 999;
-        }
-
-        .modal-box {
-          background: linear-gradient(145deg, #120000, #000);
-          border: 1px solid #600;
-          max-width: 720px;
-          width: 90%;
-          max-height: 80vh;
-          overflow-y: auto;
-          padding: 2.5rem;
-          box-shadow: 0 0 40px #600;
-        }
-
-        .modal-box h3 {
-          color: #b00000;
-          margin-bottom: 2rem;
-          text-align: center;
-        }
-
-        .field {
-          margin-bottom: 1.6rem;
-        }
-
-        .field h4 {
-          color: #c00000;
+          margin-top: 1.2rem;
+          border-top: 1px solid #400;
+          padding-top: 1rem;
           font-size: 0.85rem;
-          margin-bottom: 0.4rem;
-          letter-spacing: 1px;
-          text-transform: uppercase;
+          line-height: 1.7;
+          opacity: 0.85;
         }
 
-        .field p {
-          background: #0b0000;
-          padding: 0.8rem;
-          border-left: 3px solid #700;
-          line-height: 1.6;
+        /* USERS */
+        .user-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 1rem;
+          border: 1px solid #400;
+          margin-bottom: 0.8rem;
+          background: #0d0000;
         }
 
-        .modal-box button {
-          width: 100%;
-          margin-top: 2rem;
-          padding: 0.9rem;
+        .user-row button {
+          padding: 0.4rem 1rem;
+          border: 1px solid #700;
           background: none;
-          border: 2px solid #900;
           color: #fff;
           cursor: pointer;
         }
 
-        .modal-box button:hover {
-          background: #900;
+        /* INPUT */
+        .add-user {
+          display: flex;
+          gap: 1rem;
+          margin-bottom: 1.5rem;
         }
 
-        .hidden { display: none; }
+        .add-user input {
+          flex: 1;
+          padding: 0.7rem;
+          background: #0d0000;
+          border: 1px solid #600;
+          color: #fff;
+          font-family: inherit;
+        }
     </style>
 </head>
 
 <body>
 
 <header>
-    <h1>DECAYED SMP — ADMIN</h1>
-    <nav>
-        <button class="active" onclick="showTab('apps')">Applications</button>
-        <button onclick="showTab('users')">Admins</button>
-    </nav>
+    <h1>DECAYED SMP ADMIN</h1>
+    <p>Authorized Owner: e85972080@gmail.com</p>
 </header>
 
 <main>
 
     <!-- APPLICATIONS -->
-    <section id="apps">
+    <section>
         <h2>Applications</h2>
-        <table>
-            <thead>
-            <tr>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody id="appsTable"></tbody>
-        </table>
+
+        <div class="grid" id="apps">
+
+            <div class="card">
+                <h3>Side Actor Application</h3>
+
+                <div class="status">Status: Pending</div>
+
+                <div class="meta">
+                    <strong>Name:</strong> zxcv<br>
+                    <strong>Age:</strong> 3456<br>
+                    <strong>IGN:</strong> srfg<br>
+                    <strong>Discord:</strong> sdfg<br>
+                    <strong>Role:</strong> Side Actor
+                </div>
+
+                <div class="actions">
+                    <button onclick="acceptApp(this)">Accept</button>
+                    <button onclick="denyApp(this)">Deny</button>
+                    <button onclick="toggleDetails(this)">See More</button>
+                    <button onclick="deleteApp(this)">Delete</button>
+                </div>
+
+                <!-- SEE MORE -->
+                <div class="details">
+                    <p><strong>Role you’d play:</strong><br>sdfg</p>
+                    <p><strong>RP Experience:</strong><br>sdfg</p>
+                    <p><strong>Why Side Actor?</strong><br>sdfg</p>
+                </div>
+            </div>
+
+
+        </div>
     </section>
 
     <!-- USERS -->
-    <section id="users" class="hidden">
+    <section>
         <h2>Admin Users</h2>
-        <input id="adminEmail" placeholder="email@example.com" style="padding:0.7rem;width:300px;background:#0b0000;border:1px solid #700;color:#fff;">
-        <button onclick="addAdmin()" style="margin-left:1rem;">Add Admin</button>
-        <ul id="adminList" style="margin-top:2rem;"></ul>
+
+        <div class="add-user">
+            <input type="email" id="userEmail" placeholder="Add admin by email">
+            <button onclick="addUser()">Add</button>
+        </div>
+
+        <div id="users">
+            <div class="user-row">
+                <span>e85972080@gmail.com (Owner)</span>
+            </div>
+        </div>
     </section>
 
 </main>
 
-<!-- VIEW MODAL -->
-<div class="modal" id="viewModal">
-    <div class="modal-box">
-        <h3 id="modalTitle"></h3>
-        <div id="modalContent"></div>
-        <button onclick="closeModal()">Close</button>
-    </div>
-</div>
-
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
-    import { getFirestore, collection, getDocs, doc, setDoc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyA2hzkK8CMcMCTPDGzcF5cqp8ulZRAlBZk",
-      authDomain: "decayedsmp.firebaseapp.com",
-      projectId: "decayedsmp"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    const appsTable = document.getElementById("appsTable");
-    let cache = {};
-
-    onAuthStateChanged(auth, async user => {
-      if (!user) location.href = "adminregister.html";
-
-      const adminDoc = await getDocs(collection(db, "admins"));
-      const allowed = adminDoc.docs.some(d => d.id === user.email);
-      if (!allowed) {
-        alert("Not authorized.");
-        auth.signOut();
-      }
-
-      loadApps();
-    });
-
-    async function loadApps() {
-      appsTable.innerHTML = "";
-      const snap = await getDocs(collection(db, "applications"));
-      snap.forEach(d => {
-        const app = d.data();
-        cache[d.id] = app;
-        appsTable.innerHTML += `
-          <tr>
-            <td>${app.name || "-"}</td>
-            <td>${app.type}</td>
-            <td>${app.status || "pending"}</td>
-            <td>
-              <button onclick="viewApp('${d.id}')">See</button>
-              <button onclick="setStatus('${d.id}','accepted')">Accept</button>
-              <button onclick="setStatus('${d.id}','denied')">Deny</button>
-              <button onclick="removeApp('${d.id}')">Delete</button>
-            </td>
-          </tr>
-        `;
-      });
+<script>
+    function toggleDetails(btn) {
+      const details = btn.parentElement.nextElementSibling;
+      details.style.display = details.style.display === "block" ? "none" : "block";
     }
 
-    window.viewApp = id => {
-      const app = cache[id];
-      modalTitle.textContent = app.type.toUpperCase() + " APPLICATION";
-      modalContent.innerHTML = "";
+    function deleteApp(btn) {
+      if (!confirm("Delete this application?")) return;
+      btn.closest(".card").remove();
+    }
 
-      Object.entries(app).forEach(([k,v])=>{
-        if (["type","status"].includes(k)) return;
-        modalContent.innerHTML += `
-          <div class="field">
-            <h4>${k}</h4>
-            <p>${v}</p>
-          </div>`;
-      });
+    function acceptApp(btn) {
+      const card = btn.closest(".card");
+      card.classList.remove("denied");
+      card.classList.add("accepted");
+      card.querySelector(".status").textContent = "Status: Accepted";
+    }
 
-      viewModal.style.display = "flex";
-    };
+    function denyApp(btn) {
+      const card = btn.closest(".card");
+      card.classList.remove("accepted");
+      card.classList.add("denied");
+      card.querySelector(".status").textContent = "Status: Denied";
+    }
 
-    window.closeModal = () => viewModal.style.display = "none";
-
-    window.setStatus = async (id, status) => {
-      await updateDoc(doc(db,"applications",id), { status });
-      loadApps();
-    };
-
-    window.removeApp = async id => {
-      if (confirm("Delete application?")) {
-        await deleteDoc(doc(db,"applications",id));
-        loadApps();
-      }
-    };
-
-    window.showTab = tab => {
-      document.getElementById("apps").classList.toggle("hidden", tab !== "apps");
-      document.getElementById("users").classList.toggle("hidden", tab !== "users");
-    };
-
-    window.addAdmin = async () => {
-      const email = document.getElementById("adminEmail").value;
+    function addUser() {
+      const email = document.getElementById("userEmail").value.trim();
       if (!email) return;
-      await setDoc(doc(db,"admins",email), { added: Date.now() });
-      alert("Admin added");
-    };
+
+      const users = document.getElementById("users");
+
+      const row = document.createElement("div");
+      row.className = "user-row";
+      row.innerHTML = `
+        <span>${email}</span>
+        <button onclick="this.parentElement.remove()">Remove</button>
+      `;
+
+      users.appendChild(row);
+      document.getElementById("userEmail").value = "";
+    }
 </script>
 
 </body>
